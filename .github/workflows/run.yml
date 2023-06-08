@@ -25,6 +25,19 @@ jobs:
       - name: 读取链接
         run: cat urls > urls.txt
 
+      - name: 检测链接有效性
+        id: check-url-validity
+        run: |
+          urls=$(cat urls.txt)
+          for url in $urls; do
+            if curl --output /dev/null --silent --head --fail "$url"; then
+              echo "URL $url is valid."
+            else
+              echo "Skipping invalid URL: $url"
+              continue
+            fi
+          done
+
       - name: 爬取网页
         id: fetch-webpage
         run: |
