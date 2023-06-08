@@ -34,6 +34,9 @@ jobs:
             filename=$(echo "$url" | awk -F/ '{ print $3 }')
             timestamp=$(date +'%Y%m%d%H%M%S')
             filepath="data/${filename}_${timestamp}.txt"
+            
+            # 初始化 skip 标志
+            skip=false
 
             # 使用 puppeteer 爬取网页
             node -e "const puppeteer = require('puppeteer');const moment = require('moment');const fs = require('fs');
