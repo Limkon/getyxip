@@ -5,7 +5,7 @@ const fs = require('fs');
 async function main() {
   const url = process.argv[2];
   const filepath = process.argv[3];
-  const browser = await puppeteer.launch();
+  const browser = await puppeteer.launch({ headless: "new" });
   const page = await browser.newPage();
   await page.goto(url);
   const content = await page.content();
