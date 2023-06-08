@@ -21,6 +21,7 @@ async function main() {
         console.log(`Successfully crawled ${url}`);
       } catch (error) {
         console.log(`Failed to crawl ${url}: ${error.message}`);
+        continue; // Skip to the next iteration
       }
     }
   } catch (error) {
