@@ -12,10 +12,12 @@ jobs:
 
     steps:
       - name: Checkout 代码库
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
+        with:
+          ref: main
 
       - name: 安装 Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v2
         with:
           node-version: '16.x'
 
@@ -73,6 +75,13 @@ jobs:
         run: |
           git config --global user.name "${{ github.actor }}"
           git config --global user.email "${{ github.actor }}@users.noreply.github.com"
+
+      - name: 拉取远程仓库的更改
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: "Pull latest changes from remote repository"
+          commit_options: "--no-verify"
+          branch: main
 
       - name: 提交文件到主分支
         continue-on-error: true
