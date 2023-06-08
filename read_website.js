@@ -22,7 +22,7 @@ async function main() {
     for (let i = 0; i < urls.length; i++) {
       const url = urls[i];
       const isAccessible = await isUrlAccessible(url);
-      
+
       if (isAccessible) {
         try {
           const page = await browser.newPage();
