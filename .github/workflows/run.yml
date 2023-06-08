@@ -25,7 +25,7 @@ jobs:
         run: npm install puppeteer moment
 
       - name: 读取链接
-        run: cat urls > urls
+        run: cat urls > urls_tmp
 
       - name: 调用 read_website.js
         run: node read_website.js
