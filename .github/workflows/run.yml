@@ -33,7 +33,7 @@ jobs:
             filename=$(echo "$url" | awk -F/ '{ print $3 }')
             timestamp=$(date +'%Y%m%d%H%M%S')
             filepath="data/${filename}_${timestamp}.txt"
-            node -e "const puppeteer = require('puppeteer');const moment = require('moment');const fs = require('fs');async function main() {const url = '$url';const filepath = '$filepath';try {const browser = await puppeteer.launch({ headless: 'new' });const page = await browser.newPage();await page.goto(url, { timeout: 10000 });const content = await page.content();const timestamp = moment().format('YYYYMMDDHHmmss');fs.writeFileSync(filepath, content);await browser.close();} catch (error) {console.error('Error occurred while fetching website:', error); continue;} } main();" "$url" "$filepath"
+            node -e "const puppeteer = require('puppeteer');const moment = require('moment');const fs = require('fs');async function main() {const url = '$url';const filepath = '$filepath';let skip = false;try {const browser = await puppeteer.launch({ headless: 'new' });const page = await browser.newPage();await page.goto(url, { timeout: 10000 });const content = await page.content();const timestamp = moment().format('YYYYMMDDHHmmss');fs.writeFileSync(filepath, content);await browser.close();} catch (error) {console.error('Error occurred while fetching website:', error); skip = true;} if (skip) { console.log('Skipping URL:', url); continue; } } main();" "$url" "$filepath"
           done
 
       - name: 设置 Git 配置
