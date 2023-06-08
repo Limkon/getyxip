@@ -18,6 +18,9 @@ const puppeteer = require('puppeteer-core');
       .map(url => url.trim())
       .filter(url => url !== '');
 
+    const processedUrls = [];
+    const failedUrls = [];
+
     for (const url of urls) {
       try {
         await page.goto(url);
@@ -31,15 +34,19 @@ const puppeteer = require('puppeteer-core');
         const fileName = path.join('data', `${title}_${date}.txt`).replace(/[:?<>|"*\r\n]/g, '_');
 
         fs.writeFileSync(fileName, content);
+        processedUrls.push(url);
 
         console.log(`网站 ${url} 内容已保存至文件：${fileName}`);
       } catch (error) {
         console.error(`处理 ${url} 失败：${error.message}`);
+        failedUrls.push(url);
       }
     }
 
-    await browser.close();
+    fs.writeFileSync('url2', failedUrls.join('\n'));
     console.log('所有网站内容保存完成！');
+
+    await browser.close();
   } catch (error) {
     console.error(error);
     process.exit(1);
