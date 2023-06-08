@@ -42,6 +42,7 @@ jobs:
           git config --global user.email "${{ github.actor }}@users.noreply.github.com"
 
       - name: 提交文件到主分支
+        continue-on-error: true
         run: |
           git add data
           git commit -m 'Add website content'
