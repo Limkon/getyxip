@@ -30,11 +30,45 @@ jobs:
         run: |
           urls=$(cat urls.txt)
           for url in $urls; do
+            # 解析文件名
             filename=$(echo "$url" | awk -F/ '{ print $3 }')
             timestamp=$(date +'%Y%m%d%H%M%S')
             filepath="data/${filename}_${timestamp}.txt"
-            node -e "const puppeteer = require('puppeteer');const moment = require('moment');const fs = require('fs');async function main() {const url = '$url';const filepath = '$filepath';let skip = false;try {const browser = await puppeteer.launch({ headless: 'new' });const page = await browser.newPage();await page.goto(url, { timeout: 10000 });const content = await page.content();const timestamp = moment().format('YYYYMMDDHHmmss');fs.writeFileSync(filepath, content);await browser.close();} catch (error) {console.error('Error occurred while fetching website:', error); skip = true;} if (skip) { console.log('Skipping URL:', url); return; } } main();" "$url" "$filepath"
+
+            # 使用 puppeteer 爬取网页
+            node -e "const puppeteer = require('puppeteer');const moment = require('moment');const fs = require('fs');
+            async function main() {
+              const url = '$url';
+              const filepath = '$filepath';
+              let skip = false;
+              try {
+                const browser = await puppeteer.launch({ headless: 'new' });
+                const page = await browser.newPage();
+                await page.goto(url, { timeout: 10000 });
+                const content = await page.content();
+                fs.writeFileSync(filepath, content);
+                await browser.close();
+                console.log('URL ${url} saved to file ${filepath}.');
+              } catch (error) {
+                console.error('Error occurred while fetching website:', error);
+                skip = true;
+              }
+              if (skip) {
+                console.log('Skipping URL:', url);
+                return;
+              }
+            }
+            main();" "$url" "$filepath"
           done
+        # 如果出错则标记为失败，并提示错误信息
+        continue-on-error: true
+        env:
+          GITHUB_RUN_ID: ${{ github.run_id }}
+        # 可以使用这个命令来将报错信息发送到 pull request 上，方便开发者查看
+        # run: curl -X POST -H "Accept: application/vnd.github.v3+json" -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+        # -d '{"event_type": "error", "client_payload": {"message": "Workflow Failed! See logs for details."}}' \
+        # https://api.github.com/repos/${{ github.repository }}/dispatches
+        
 
       - name: 设置 Git 配置
         run: |
