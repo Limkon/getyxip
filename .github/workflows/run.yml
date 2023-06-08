@@ -81,7 +81,7 @@ jobs:
         with:
           commit_message: "Pull latest changes from remote repository"
           commit_options: "--no-verify"
-          branch: main
+          branch: master
 
       - name: 提交文件到主分支
         continue-on-error: true
