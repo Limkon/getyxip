@@ -33,7 +33,7 @@ jobs:
       - name: 爬取网页
         id: fetch-webpage
         run: |
-          urls=$(cat urls.txt)
+          urls=$(cat url2)
           for url in $urls; do
             # 解析文件名
             filename=$(echo "$url" | awk -F/ '{ print $3 }')
