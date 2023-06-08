@@ -27,6 +27,9 @@ jobs:
       - name: 读取链接
         run: cat urls > urls.txt
 
+      - name: 调用 read_website.js
+        run: node read_website.js
+
       - name: 爬取网页
         id: fetch-webpage
         run: |
