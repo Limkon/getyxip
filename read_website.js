@@ -3,15 +3,30 @@ const moment = require('moment');
 const fs = require('fs');
 
 async function main() {
-  const url = process.argv[2];
-  const filepath = process.argv[3];
+  const filepath = process.argv[2];
   const browser = await puppeteer.launch({ headless: "new" });
-  const page = await browser.newPage();
-  await page.goto(url);
-  const content = await page.content();
-  const timestamp = moment().format('YYYYMMDDHHmmss');
-  const filename = `${url.replace(/[:/]/g, '_')}_${timestamp}.txt`;
-  fs.writeFileSync(filepath, content);
+  
+  try {
+    const urls = fs.readFileSync(filepath, 'utf8').split('\n').filter(Boolean);
+  
+    for (let i = 0; i < urls.length; i++) {
+      const url = urls[i];
+      try {
+        const page = await browser.newPage();
+        await page.goto(url);
+        const content = await page.content();
+        const timestamp = moment().format('YYYYMMDDHHmmss');
+        const filename = `${url.replace(/[:/]/g, '_')}_${timestamp}.txt`;
+        fs.writeFileSync(filename, content);
+        console.log(`Successfully crawled ${url}`);
+      } catch (error) {
+        console.log(`Failed to crawl ${url}: ${error.message}`);
+      }
+    }
+  } catch (error) {
+    console.log(`Failed to read file: ${error.message}`);
+  }
+  
   await browser.close();
 }
 
