@@ -1,33 +1,46 @@
 const puppeteer = require('puppeteer');
+const moment = require('moment');
 const fs = require('fs');
 const axios = require('axios');
 
 async function main() {
   const filepath = process.argv[2];
-  const urls = fs.readFileSync(filepath, 'utf8').split('\n').filter(Boolean);
+  const browser = await puppeteer.launch({ headless: "new" });
 
-  const browser = await puppeteer.launch();
+  try {
+    const urls = fs.readFileSync(filepath, 'utf8').split('\n').filter(Boolean);
 
-  for (let i = 0; i < urls.length; i++) {
-    const url = urls[i];
+    for (let i = 0; i < urls.length; i++) {
+      const url = urls[i];
 
-    try {
-      // 检测网址可访问性
-      await axios.get(url);
-      console.log(`Successfully accessed ${url}`);
+      try {
+        await axios.get(url);
+        console.log(`Successfully accessed ${url}`);
 
-      // 在这里执行原来的爬取操作
-      const page = await browser.newPage();
-      await page.goto(url);
-      // ...
+        const page = await browser.newPage();
+        try {
+          await page.goto(url);
+          const content = await page.content();
+          const timestamp = moment().format('YYYYMMDDHHmmss');
+          const filename = `${url.replace(/[:/]/g, '_')}_${timestamp}.txt`;
+          fs.writeFileSync(filename, content);
+          console.log(`Successfully crawled ${url}`);
+        } catch (error) {
+          console.log(`Failed to crawl ${url}: ${error.message}`);
+          continue; // Skip to the next URL
+        }
 
-    } catch (error) {
-      console.log(`Failed to access ${url}: ${error.message}`);
-      continue; // 跳过当前网址
+        await page.close();
+      } catch (error) {
+        console.log(`Failed to create page for ${url}: ${error.message}`);
+        continue; // Skip to the next URL
+      }
     }
+  } catch (error) {
+    console.log(`Failed to read file: ${error.message}`);
+  } finally {
+    await browser.close();
   }
-
-  await browser.close();
 }
 
 main();
