@@ -5,10 +5,10 @@ const fs = require('fs');
 async function main() {
   const filepath = process.argv[2];
   const browser = await puppeteer.launch({ headless: "new" });
-  
+
   try {
     const urls = fs.readFileSync(filepath, 'utf8').split('\n').filter(Boolean);
-  
+
     for (let i = 0; i < urls.length; i++) {
       const url = urls[i];
       try {
@@ -22,13 +22,17 @@ async function main() {
       } catch (error) {
         console.log(`Failed to crawl ${url}: ${error.message}`);
         continue; // Skip to the next iteration
+      } finally {
+        if (page) {
+          await page.close();
+        }
       }
     }
   } catch (error) {
     console.log(`Failed to read file: ${error.message}`);
+  } finally {
+    await browser.close();
   }
-  
-  await browser.close();
 }
 
 main();
