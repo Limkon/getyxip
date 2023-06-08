@@ -25,19 +25,6 @@ jobs:
       - name: 读取链接
         run: cat urls > urls.txt
 
-      - name: 检测链接有效性
-        id: check-url-validity
-        run: |
-          urls=$(cat urls.txt)
-          for url in $urls; do
-            if curl --output /dev/null --silent --head --fail "$url"; then
-              echo "URL $url is valid."
-            else
-              echo "Skipping invalid URL: $url"
-              continue
-            fi
-          done
-
       - name: 爬取网页
         id: fetch-webpage
         run: |
@@ -48,12 +35,17 @@ jobs:
             timestamp=$(date +'%Y%m%d%H%M%S')
             filepath="data/${filename}_${timestamp}.txt"
             
+            # 检查链接是否可以访问
+            if ! curl --output /dev/null --silent --head --fail "$url"; then
+              echo "Skipping URL: $url, unable to access."
+              continue
+            fi
+            
             # 使用 puppeteer 爬取网页
             node -e "const puppeteer = require('puppeteer');const moment = require('moment');const fs = require('fs');
             async function main() {
               const url = '$url';
               const filepath = '$filepath';
-              let skip = false;
               try {
                 const browser = await puppeteer.launch({ headless: 'new' });
                 const page = await browser.newPage();
@@ -64,11 +56,6 @@ jobs:
                 console.log('URL ${url} saved to file ${filepath}.');
               } catch (error) {
                 console.error('Error occurred while fetching website:', error);
-                skip = true;
-              }
-              if (skip) {
-                console.log('Skipping URL:', url);
-                return;
               }
             }
             main();" "$url" "$filepath"
@@ -81,7 +68,6 @@ jobs:
         # run: curl -X POST -H "Accept: application/vnd.github.v3+json" -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
         # -d '{"event_type": "error", "client_payload": {"message": "Workflow Failed! See logs for details."}}' \
         # https://api.github.com/repos/${{ github.repository }}/dispatches
-        
 
       - name: 设置 Git 配置
         run: |
@@ -93,4 +79,4 @@ jobs:
         run: |
           git add data
           git commit -m 'Add website content'
-          git push origin HEAD:master
+          git push origin HEAD:main
