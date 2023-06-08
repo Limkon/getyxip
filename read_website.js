@@ -24,24 +24,13 @@ async function main() {
   try {
     const urls = fs.readFileSync(filepath, 'utf8').split('\n').filter(Boolean);
 
-    async function processUrls(index) {
-      if (index >= urls.length) {
-        // Finished processing all urls
-        await browser.close();
-        return;
-      }
-
-      const url = urls[index];
+    for (let i = 0; i < urls.length; i++) {
+      const url = urls[i];
       await crawlUrl(url, browser);
-
-      // Process next url
-      await processUrls(index + 1);
     }
-
-    // Start processing urls
-    await processUrls(0);
   } catch (error) {
     console.log(`Failed to read file: ${error.message}`);
+  } finally {
     await browser.close();
   }
 }
