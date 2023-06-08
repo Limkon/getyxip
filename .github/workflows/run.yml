@@ -14,7 +14,7 @@ jobs:
       - name: Checkout 代码库
         uses: actions/checkout@v2
         with:
-          ref: main
+          ref: ${{ github.head_ref }}
 
       - name: 安装 Node.js
         uses: actions/setup-node@v2
@@ -81,11 +81,11 @@ jobs:
         with:
           commit_message: "Pull latest changes from remote repository"
           commit_options: "--no-verify"
-          branch: master
+          branch: ${{ github.head_ref }}
 
       - name: 提交文件到主分支
         continue-on-error: true
         run: |
           git add data
           git commit -m 'Add website content'
-          git push origin HEAD:main
+          git push origin HEAD:${{ github.head_ref }}
