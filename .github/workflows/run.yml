@@ -11,27 +11,24 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: 检出代码库
-        uses: actions/checkout@v2
+      - name: Checkout 代码库
+        uses: actions/checkout@v3
 
       - name: 安装 Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: '16.x'
 
       - name: 安装依赖
         run: npm install puppeteer moment
 
-      - name: 读取链接
-        run: echo "${{ secrets.URLS }}" > urls
-
       - name: 爬取网页
         id: fetch-webpage
         run: |
-          urls="$(cat urls)"
+          urls=$(cat urls)
           for url in $urls; do
-            filename="$(echo "$url" | awk -F/ '{ print $3 }')"
-            timestamp="$(date +'%Y%m%d%H%M%S')"
+            filename=$(echo "$url" | awk -F/ '{ print $3 }')
+            timestamp=$(date +'%Y%m%d%H%M%S')
             filepath="data/${filename}_${timestamp}.txt"
             node read_website.js "$url" "$filepath"
           done
@@ -46,6 +43,3 @@ jobs:
           git add data
           git commit -m 'Add website content'
           git push origin HEAD:main
-
-    env:
-      URLS: ${{ steps.get-urls.outputs.urls }}
