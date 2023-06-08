@@ -1,7 +1,6 @@
 const puppeteer = require('puppeteer');
 const moment = require('moment');
 const fs = require('fs');
-const axios = require('axios');
 
 async function main() {
   const filepath = process.argv[2];
@@ -14,9 +13,6 @@ async function main() {
       const url = urls[i];
 
       try {
-        await axios.get(url);
-        console.log(`Successfully accessed ${url}`);
-
         const page = await browser.newPage();
         try {
           await page.goto(url);
@@ -29,7 +25,6 @@ async function main() {
           console.log(`Failed to crawl ${url}: ${error.message}`);
           continue; // Skip to the next URL
         }
-
         await page.close();
       } catch (error) {
         console.log(`Failed to create page for ${url}: ${error.message}`);
