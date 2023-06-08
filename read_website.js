@@ -5,10 +5,10 @@ const puppeteer = require('puppeteer-core');
 
 (async () => {
   try {
-    const browser = await puppeteer.launch({
-      executablePath: 'google-chrome-stable',
-      args: ['--no-sandbox', '--disable-setuid-sandbox'],
-    });
+  const browser = await puppeteer.launch({
+   args: ['--no-sandbox', '--disable-setuid-sandbox'],
+});
+
     const page = await browser.newPage();
 
     // 读取文件内容，获取所有要抓取的URL列表
