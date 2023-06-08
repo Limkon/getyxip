@@ -26,7 +26,9 @@ async function main() {
 
     for (let i = 0; i < urls.length; i++) {
       const url = urls[i];
-      await crawlUrl(url, browser);
+      await crawlUrl(url, browser).catch(error => {
+        console.log(`Failed to crawl ${url}: ${error.message}`);
+      });
     }
   } catch (error) {
     console.log(`Failed to read file: ${error.message}`);
