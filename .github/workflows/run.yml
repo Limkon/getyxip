@@ -1,4 +1,4 @@
-\name: fetch-website-content
+name: fetch-website-content
 
 on:
   workflow_dispatch:
