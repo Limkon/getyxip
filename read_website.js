@@ -13,7 +13,7 @@ const puppeteer = require('puppeteer-core');
 
     // 读取文件内容，获取所有要抓取的URL列表
     const urls = fs
-      .readFileSync('urls', 'utf-8')
+      .readFileSync('urls_tmp', 'utf-8')
       .split('\n')
       .map(url => url.trim())
       .filter(url => url !== '');
