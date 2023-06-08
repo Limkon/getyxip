@@ -14,15 +14,20 @@ async function main() {
 
       try {
         const page = await browser.newPage();
-        await page.goto(url);
-        const content = await page.content();
-        const timestamp = moment().format('YYYYMMDDHHmmss');
-        const filename = `${url.replace(/[:/]/g, '_')}_${timestamp}.txt`;
-        fs.writeFileSync(filename, content);
-        console.log(`Successfully crawled ${url}`);
+        // Add try-catch block around the page.goto() function
+        try {
+          await page.goto(url);
+          const content = await page.content();
+          const timestamp = moment().format('YYYYMMDDHHmmss');
+          const filename = `${url.replace(/[:/]/g, '_')}_${timestamp}.txt`;
+          fs.writeFileSync(filename, content);
+          console.log(`Successfully crawled ${url}`);
+        } catch (error) {
+          console.log(`Failed to crawl ${url}: ${error.message}`);
+        }
         await page.close();
       } catch (error) {
-        console.log(`Failed to crawl ${url}: ${error.message}`);
+        console.log(`Failed to create page for ${url}: ${error.message}`);
       }
     }
   } catch (error) {
