@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const moment = require('moment');
 
 // 获取 data 目录下的所有文件
 const files = fs.readdirSync('data');
@@ -10,7 +11,7 @@ const results = {};
 // 遍历文件
 for (const file of files) {
   // 解析文件名，获取网址和日期
-  const [url, date] = file.split('_');
+  const [url, _, date] = file.split('_');
   
   // 构建结果文件名
   const resultFileName = `${url}_result_${date}`;
@@ -30,8 +31,11 @@ for (const file of files) {
   fs.unlinkSync(path.join('data', file));
   
   // 保存合并结果到文件
-  const resultFilePath = path.join('result', resultFileName); // 修改保存路径为 "result" 目录下
+  const dateToday = moment().format('YYYY-MM-DD');
+  const resultFilePath = path.join('result', `${resultFileName}_${dateToday}.txt`); // 修改保存路径为 "result" 目录下，并加上当前日期
   fs.writeFileSync(resultFilePath, results[url]);
   
   console.log(`合并并保存 ${file} 到 ${resultFilePath}`);
 }
+
+
