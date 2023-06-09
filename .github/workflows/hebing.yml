@@ -21,10 +21,15 @@ jobs:
       - name: 安装依赖
         run: npm install
 
+      - name: 检查结果目录
+        run: |
+          if [ ! -d "result" ]; then
+            mkdir result
+          fi
+
       - name: 合并结果文件
         run: |
           node mergeResults.js
-          mkdir result
           cp -r data/. result/
           cd result
           git config --local user.email "actions@github.com"
