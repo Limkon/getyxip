@@ -4,40 +4,40 @@ const moment = require('moment');
 const puppeteer = require('puppeteer-core');
 
 (async () => {
-  const browser = await puppeteer.launch();
-  const page = await browser.newPage();
-  const urls = fs.readFileSync('urls.txt', 'utf-8').split(/\r?\n/);
-  const outputDir = path.join(__dirname, 'output');
+  try {
+    const browser = await puppeteer.launch({ executablePath: puppeteer.executablePath() });
+    const page = await browser.newPage();
+    const urls = fs.readFileSync('urls', 'utf-8').split(/\r?\n/);
+    const outputDir = path.join(__dirname, 'output');
 
-  for (const url of urls) {
-    // 如果 URL 是空行，则跳过
-    if (!url.trim()) {
-      continue;
+    for (const url of urls) {
+      // 如果 URL 是空行，则跳过
+      if (!url.trim()) {
+        continue;
+      }
+
+      try {
+        console.log(`Visiting ${url}...`);
+        await page.goto(url);
+
+        // 等待页面中的任意一个元素加载完成
+        await page.waitForSelector('body');
+
+        const title = await page.title();
+        const date = moment().format('YYYY-MM-DD');
+        const filename = `${title.replace(/[:/\\]/g, '_')}_${date}.txt`;
+        const content = await page.content();
+
+        fs.writeFileSync(path.join(outputDir, filename), content);
+        console.log(`Content saved to ${path.join(outputDir, filename)}`);
+      } catch (err) {
+        console.error(`Error occurred while processing ${url}: ${err.stack}`);
+      }
     }
 
-    try {
-      console.log(`Visiting ${url}...`);
-      await page.goto(url);
-      
-      // 等待页面中的任意一个元素加载完成
-      await page.waitForFunction(() => {
-        return document.querySelector('body') !== null;
-      });
-
-      const title = await page.title();
-      const date = moment().format('YYYY-MM-DD');
-      const filename = `${title.replace(/[:/\\]/g, '_')}_${date}.txt`;
-      const content = await page.evaluate(() => {
-        return document.documentElement.outerHTML;
-      });
-
-      fs.writeFileSync(path.join(outputDir, filename), content);
-      console.log(`Content saved to ${path.join(outputDir, filename)}`);
-    } catch (err) {
-      console.error(`Error occurred while processing ${url}: ${err.stack}`);
-    }
+    await browser.close();
+    console.log('All done!');
+  } catch (err) {
+    console.error(`Error occurred while launching Puppeteer: ${err.stack}`);
   }
-
-  await browser.close();
-  console.log('All done!');
 })();
