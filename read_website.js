@@ -21,14 +21,15 @@ const puppeteer = require('puppeteer-core');
     for (const url of urls) {
       try {
         await page.goto(url);
-        await page.waitForSelector('#app');
 
-        const title = await page.title();
-        const appElement = await page.$('#app');
-        const content = await page.evaluate(element => element.innerText, appElement);
+        const content = await page.evaluate(() => {
+          // 在此编写自定义的JavaScript代码来选择和提取页面内容
+          // 例如：返回整个页面的innerText
+          return document.documentElement.innerText;
+        });
 
         const date = moment().format('YYYY-MM-DD');
-        const fileName = path.join('data', `${title}_${date}.txt`).replace(/[:?<>|"*\r\n]/g, '_');
+        const fileName = path.join('data', `${url}_${date}.txt`).replace(/[:?<>|"*\r\n]/g, '_');
 
         fs.writeFileSync(fileName, content);
 
