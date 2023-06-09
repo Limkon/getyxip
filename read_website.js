@@ -18,12 +18,10 @@ const puppeteer = require('puppeteer-core');
       .map(url => url.trim())
       .filter(url => url !== '');
 
-   // ...
-
 for (const url of urls) {
   try {
     await page.goto(url);
-    await page.waitForLoadState('networkidle');
+    await page.waitForNavigation({ timeout: 5000 });
 
     const title = await page.title();
     const content = await page.content();
@@ -38,8 +36,6 @@ for (const url of urls) {
     console.error(`处理 ${url} 失败：${error.message}`);
   }
 }
-
-// ...
 
 
     await browser.close();
