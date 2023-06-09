@@ -26,7 +26,20 @@ const puppeteer = require('puppeteer-core');
         await page.goto(url);
 
         // 尝试不同的选择器
-        const selectors = ['#app', '.content', 'div', '.my-class', '#my-id', '[name="my-name"]'];
+        const selectors = [
+          '#app',                 // ID 选择器
+          '.content',             // 类选择器
+          'div',                  // 元素选择器
+          '.my-class',            // 类选择器
+          '#my-id',               // ID 选择器
+          '[name="my-name"]',     // 属性选择器
+          '.my-parent .my-child', // 后代选择器
+          'ul > li',              // 子元素选择器
+          'h2 + p',               // 兄弟选择器
+          ':hover',               // 伪类选择器
+          ':nth-child(2)'         // 伪类选择器
+        ];
+
         let content = '';
         let success = false;
 
