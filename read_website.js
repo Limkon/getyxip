@@ -1,11 +1,10 @@
 const fs = require('fs');
 const path = require('path');
 const moment = require('moment');
-const puppeteer = require('puppeteer-core');
+const puppeteer = require('puppeteer');
 
 (async () => {
   try {
-    const executablePath = await puppeteer.executablePath();
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
     const urls = fs.readFileSync('urls', 'utf-8').split(/\r?\n/);
