@@ -6,7 +6,7 @@ const puppeteer = require('puppeteer-core');
 (async () => {
   try {
     const executablePath = await puppeteer.executablePath();
-    const browser = await puppeteer.launch({ executablePath });
+    const browser = await puppeteer.launch();
     const page = await browser.newPage();
     const urls = fs.readFileSync('urls', 'utf-8').split(/\r?\n/);
     const outputDir = path.join(__dirname, 'output');
