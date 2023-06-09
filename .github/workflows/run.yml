@@ -32,6 +32,8 @@ jobs:
           sleep "$delay"
 
       - name: 读取网站内容
+        env:
+          TZ: 'Asia/Shanghai'
         run: |
           node read_website.js
 
@@ -47,7 +49,7 @@ jobs:
             cp README.md README.md.bak
             head -n 4 README.md.bak > README.md
           fi
-          echo "### Code Run on: $(date)" >> README.md
+          echo "### 备份：$(TZ='Asia/Shanghai' date '+%A %Y年%m月%d日 %T')" >> README.md
           cat README.md.bak >> README.md
           rm README.md.bak
 
