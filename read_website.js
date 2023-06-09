@@ -21,11 +21,42 @@ const puppeteer = require('puppeteer-core');
     for (const url of urls) {
       try {
         await page.goto(url);
-        await page.waitForSelector('#app');
 
-        const title = await page.title();
-        const appElement = await page.$('#app');
-        const content = await page.evaluate(element => element.innerText, appElement);
+        // 尝试不同的选择器
+        const selectors = ['#app', '.content', 'div', '.my-class', '#my-id', '[name="my-name"]'];
+        let content = '';
+        let success = false;
+
+        for (const selector of selectors) {
+          try {
+            await page.waitForSelector(selector);
+            const element = await page.$(selector);
+            content = await page.evaluate(element => element.innerText, element);
+            success = true;
+            break;
+          } catch (error) {
+            console.error(`尝试通过选择器 ${selector} 获取 ${url} 内容失败：${error.message}`);
+          }
+        }
+
+        // 如果所有选择器都失败，则执行自定义 JavaScript 代码提取页面内容
+        if (!success) {
+          console.error(`所有选择器都无法获取 ${url} 的内容，将执行自定义代码`);
+
+          const customContent = await page.evaluate(() => {
+            // 在此编写自定义的 JavaScript 代码来选择和提取页面内容
+            // 例如：返回整个页面的 innerText
+            return document.documentElement.innerText;
+          });
+
+          if (customContent) {
+            content = customContent;
+            console.log(`通过自定义代码成功提取了 ${url} 的内容`);
+          } else {
+            console.error(`自定义代码也无法获取 ${url} 的内容`);
+            continue;
+          }
+        }
 
         const date = moment().format('YYYY-MM-DD');
         const fileName = path.join('data', `${url.replace(/[:?<>|"*\r\n/]/g, '_')}_${date}.txt`);
@@ -34,26 +65,7 @@ const puppeteer = require('puppeteer-core');
 
         console.log(`网站 ${url} 内容已保存至文件：${fileName}`);
       } catch (error) {
-        console.error(`尝试通过 #app 元素获取 ${url} 内容失败：${error.message}`);
-
-        try {
-          await page.goto(url);
-
-          const content = await page.evaluate(() => {
-            // 在此编写自定义的JavaScript代码来选择和提取页面内容
-            // 例如：返回整个页面的innerText
-            return document.documentElement.innerText;
-          });
-
-          const date = moment().format('YYYY-MM-DD');
-          const fileName = path.join('data', `${url.replace(/[:?<>|"*\r\n/]/g, '_')}_${date}.txt`);
-
-          fs.writeFileSync(fileName, content);
-
-          console.log(`网站 ${url} 内容已保存至文件：${fileName}`);
-        } catch (error) {
-          console.error(`处理 ${url} 失败：${error.message}`);
-        }
+        console.error(`处理 ${url} 失败：${error.message}`);
       }
     }
 
