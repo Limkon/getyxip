@@ -13,28 +13,31 @@ const results = {};
 for (const file of files) {
   // 解析文件名，获取网址和日期
   const [url, _, date] = file.split('_');
-  
+
   // 构建结果文件名
-  const resultFileName = `${url}_result_${date}`;
-  
+  const resultFileName = `${url}_result`;
+
   // 读取文件内容
   const content = fs.readFileSync(path.join(dataDir, file), 'utf-8');
-  
-  // 如果结果中已存在该网址的内容，则合并内容并去重
+
+  // 合并内容到对应网址的结果
   if (results[url]) {
-    const mergedContent = results[url] + '\n' + content;
-    results[url] = Array.from(new Set(mergedContent.split('\n'))).join('\n');
+    results[url] += '\n' + content;
   } else {
     results[url] = content;
   }
-  
+
   // 删除原始文件
   fs.unlinkSync(path.join(dataDir, file));
-  
-  // 保存合并结果到文件
+
+  console.log(`合并 ${file} 到 ${resultFileName}`);
+}
+
+// 保存合并结果到文件
+for (const url in results) {
   const dateToday = moment().format('YYYY-MM-DD');
-  const resultFilePath = path.join('result', `${resultFileName}_${dateToday}.txt`); // 修改保存路径为 "result" 目录下，并加上当前日期
+  const resultFilePath = path.join('result', `${resultFileName}_${url}_${dateToday}.txt`); // 修改保存路径为 "result" 目录下，并加上网址和当前日期
   fs.writeFileSync(resultFilePath, results[url]);
-  
-  console.log(`合并并保存 ${file} 到 ${resultFilePath}`);
+
+  console.log(`保存合并结果到 ${resultFilePath}`);
 }
