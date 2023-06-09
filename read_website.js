@@ -11,7 +11,10 @@ const puppeteer = require('puppeteer-core');
     });
     const page = await browser.newPage();
 
-    // 读取文件内容，获取所有要抓取的URL列表
+    // 将页面等待时间更改为 5000 毫秒
+    page.setDefaultTimeout(5000);
+
+    // 读取文件内容，获取所有要抓取的 URL 列表
     const urls = fs
       .readFileSync('urls', 'utf-8')
       .split('\n')
