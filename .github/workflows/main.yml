@@ -24,6 +24,8 @@ jobs:
       - name: 安装依赖
         run: |
           npm install puppeteer-core@latest
+          npm install puppeteer-extra@^4.0.0
+          npm install puppeteer-extra-plugin-stealth@^3.1.0
           npm install moment
 
       - name: 延时
@@ -39,7 +41,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: website-content
-          path: data
+          path: output
 
       - name: 设置 Git 配置
         run: |
