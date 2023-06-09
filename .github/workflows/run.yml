@@ -48,6 +48,8 @@ jobs:
           if [[ -f README.md ]]; then
             cp README.md README.md.bak
             head -n 4 README.md.bak > README.md
+            tail -n 7 README.md.bak >> README.md
+            rm README.md.bak
           fi
           echo "### 备份：$(TZ='Asia/Shanghai' date '+%A %Y年%m月%d日 %T')" >> README.md
           cat README.md.bak >> README.md
