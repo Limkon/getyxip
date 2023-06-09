@@ -30,7 +30,7 @@ for (const file of files) {
   fs.unlinkSync(path.join('data', file));
   
   // 保存合并结果到文件
-  const resultFilePath = path.join('result', resultFileName); // 修改保存路径
+  const resultFilePath = path.join('result', resultFileName); // 修改保存路径为 "result" 目录下
   fs.writeFileSync(resultFilePath, results[url]);
   
   console.log(`合并并保存 ${file} 到 ${resultFilePath}`);
