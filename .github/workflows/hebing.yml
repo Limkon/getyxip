@@ -1,4 +1,5 @@
 name: 合并结果文件
+
 on:
   workflow_dispatch:
   
@@ -22,9 +23,15 @@ jobs:
         run: npm install
 
       - name: 合并结果文件
+        run: node mergeResults.js
+
+      - name: 复制文件到结果目录
         run: |
-          node mergeResults.js          
+          
           cp data/* result/
+
+      - name: 提交更改到主分支
+        run: |
           git config --local user.email "actions@github.com"
           git config --local user.name "GitHub Actions"
           git add result/*
