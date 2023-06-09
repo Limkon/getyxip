@@ -2,10 +2,17 @@ const fs = require('fs');
 const path = require('path');
 const moment = require('moment');
 const puppeteer = require('puppeteer-core');
+const chromium = require('chrome-aws-lambda');
 
 (async () => {
   try {
-    const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox'] });
+    const executablePath = await chromium.executablePath;
+    const browser = await puppeteer.launch({
+      headless: true,
+      args: chromium.args,
+      defaultViewport: chromium.defaultViewport,
+      executablePath,
+    });
     const page = await browser.newPage();
     const urls = fs.readFileSync('urls', 'utf-8').split(/\r?\n/);
     const outputDir = path.join(__dirname, 'output');
