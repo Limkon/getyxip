@@ -47,7 +47,7 @@ jobs:
         run: |
           if [[ -f README.md ]]; then
             cp README.md README.md.bak
-            head -n 4 README.md.bak > README.md
+            head -n 3 README.md.bak > README.md
             if [[ -f README.md.bak ]]; then
               tail -n 7 README.md.bak >> README.md
               rm README.md.bak
