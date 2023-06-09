@@ -43,7 +43,7 @@ const puppeteer = require('puppeteer-core');
       }
     }
 
-    fs.writeFileSync('url2_tmp', failedUrls.join('\n'));
+    fs.writeFileSync('urls2_tmp', failedUrls.join('\n'));
     console.log('所有网站内容保存完成！');
 
     await browser.close();
