@@ -2,8 +2,6 @@ name: 合并结果文件
 on:
   schedule:
     - cron: "0 0 */7 * *"
- 
-  workflow_dispatch:
 
 jobs:
   merge_results:
@@ -11,16 +9,23 @@ jobs:
 
     steps:
       - name: Checkout 代码库
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
 
       - name: 设置 Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v2
         with:
-          node-version: '16.X'
+          node-version: 14
 
       - name: 安装依赖
         run: npm install
 
       - name: 合并结果文件
-        run: node mergeResults.js
-
+        run: |
+          node mergeResults.js
+          mkdir result
+          cp data/* result/
+          git config --local user.email "actions@github.com"
+          git config --local user.name "GitHub Actions"
+          git add result/*
+          git commit -m "Add merged result files"
+          git push
