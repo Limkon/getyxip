@@ -36,7 +36,7 @@ for (const file of files) {
 // 保存合并结果到文件
 for (const url in results) {
   const dateToday = moment().format('YYYY-MM-DD');
-  const resultFilePath = path.join('result', `${resultFileName}_${url}_${dateToday}.txt`); // 修改保存路径为 "result" 目录下，并加上网址和当前日期
+  const resultFilePath = path.join('result', `${url}_result_${dateToday}.txt`); // 修改保存路径为 "result" 目录下，并加上网址和当前日期
   fs.writeFileSync(resultFilePath, results[url]);
 
   console.log(`保存合并结果到 ${resultFilePath}`);
