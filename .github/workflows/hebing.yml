@@ -1,5 +1,4 @@
 name: 合并结果文件
-
 on:
   workflow_dispatch:
   
@@ -12,28 +11,24 @@ jobs:
 
     steps:
       - name: Checkout 代码库
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: 设置 Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
-          node-version: 14
+          node-version: '16.X'
 
       - name: 安装依赖
         run: npm install
 
       - name: 合并结果文件
-        run: node mergeResults.js
-
-      - name: 复制文件到结果目录
         run: |
-          
-          cp data/* result/
-
-      - name: 提交更改到主分支
-        run: |
+          node mergeResults.js
+          mkdir result
+          cp -r data/. result/
+          cd result
           git config --local user.email "actions@github.com"
           git config --local user.name "GitHub Actions"
-          git add result/*
+          git add .
           git commit -m "Add merged result files"
           git push
