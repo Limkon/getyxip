@@ -1,0 +1,24 @@
+name: 合并结果文件
+on:
+  schedule:
+    - cron: "0 0 */7 * *"
+
+jobs:
+  merge_results:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout 代码库
+        uses: actions/checkout@v2
+
+      - name: 设置 Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 14
+
+      - name: 安装依赖
+        run: npm install
+
+      - name: 合并结果文件
+        run: node mergeResults.js
+
