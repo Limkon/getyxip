@@ -4,44 +4,38 @@ const moment = require('moment');
 const puppeteer = require('puppeteer-core');
 
 (async () => {
-  try {
-    const browser = await puppeteer.launch({
-      executablePath: 'google-chrome-stable',
-      args: ['--no-sandbox', '--disable-setuid-sandbox'],
-    });
-    const page = await browser.newPage();
+  const browser = await puppeteer.launch();
+  const page = await browser.newPage();
+  const urls = fs.readFileSync('urls.txt', 'utf-8').split(/\r?\n/);
 
-    // 读取文件内容，获取所有要抓取的URL列表
-    const urls = fs
-      .readFileSync('urls', 'utf-8')
-      .split('\n')
-      .map(url => url.trim())
-      .filter(url => url !== '');
-
-    for (const url of urls) {
-      try {
-        await page.goto(url);
-        await page.waitForSelector('#app');
-
-        const title = await page.title();
-        const appElement = await page.$('#app');
-        const content = await page.evaluate(element => element.innerText, appElement);
-
-        const date = moment().format('YYYY-MM-DD');
-        const fileName = path.join('data', `${title}_${date}.txt`).replace(/[:?<>|"*\r\n]/g, '_');
-
-        fs.writeFileSync(fileName, content);
-
-        console.log(`网站 ${url} 内容已保存至文件：${fileName}`);
-      } catch (error) {
-        console.error(`处理 ${url} 失败：${error.message}`);
-      }
+  for (const url of urls) {
+    // 如果 URL 是空行，则跳过
+    if (!url.trim()) {
+      continue;
     }
 
-    await browser.close();
-    console.log('所有网站内容保存完成！');
-  } catch (error) {
-    console.error(error);
-    process.exit(1);
+    try {
+      console.log(`Visiting ${url}...`);
+      await page.goto(url);
+      // 等待页面中的任意一个元素加载完成
+      await page.waitForFunction(() => {
+        return document.querySelector('body') !== null;
+      });
+
+      const title = await page.title();
+      const date = moment().format('YYYY-MM-DD');
+      const filename = `${title.replace(/[:/\\]/g, '_')}_${date}.txt`;
+      const content = await page.evaluate(() => {
+        return document.documentElement.outerHTML;
+      });
+
+      fs.writeFileSync(`data/${filename}`, content);
+      console.log(`Content saved to data/${filename}`);
+    } catch (err) {
+      console.error(`Error occurred while processing ${url}: ${err.stack}`);
+    }
   }
+
+  await browser.close();
+  console.log('All done!');
 })();
