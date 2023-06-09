@@ -30,49 +30,47 @@ jobs:
       - name: 调用 read_website.js
         run: node read_website.js
 
+      name: 爬取网页
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 0 * * *"
+
+jobs:
+  fetch-webpage:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Install Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "14.x"
+      - name: Install dependencies
+        run: |
+          npm install moment puppeteer-core
+      - name: Compile Chromium on Ubuntu
+        run: |
+          sudo apt-get update
+          sudo apt-get install chromium-browser
+      - name: Set up X11 display
+        run: |
+          sudo apt-get install xvfb
+          Xvfb :99 &
+          export DISPLAY=:99
+      - name: Set up Puppeteer
+        run: |
+          export PUPPETEER_EXECUTABLE_PATH=$(which chromium-browser)
+          export PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
+          export PUPPETEER_DOWNLOAD_HOST=https://storage.googleapis.com.cnpmjs.org
       - name: 爬取网页
         id: fetch-webpage
         run: |
-          urls=$(cat urls2_tmp)
-          for url in $urls; do
-            # 解析文件名
-            filename=$(echo "$url" | awk -F/ '{ print $3 }')
-            timestamp=$(date +'%Y%m%d%H%M%S')
-            filepath="data/${filename}_${timestamp}.txt"
-            
-            # 检查链接是否可以访问
-            if ! curl --output /dev/null --silent --head --fail "$url"; then
-              echo "Skipping URL: $url, unable to access."
-              continue
-            fi
-            
-            # 使用 puppeteer 爬取网页
-            node -e "const puppeteer = require('puppeteer');const moment = require('moment');const fs = require('fs');
-            async function main() {
-              const url = '$url';
-              const filepath = '$filepath';
-              try {
-                const browser = await puppeteer.launch({ headless: 'new' });
-                const page = await browser.newPage();
-                await page.goto(url, { timeout: 10000 });
-                const content = await page.content();
-                fs.writeFileSync(filepath, content);
-                await browser.close();
-                console.log('URL ${url} saved to file ${filepath}.');
-              } catch (error) {
-                console.error('Error occurred while fetching website:', error);
-              }
-            }
-            main();" "$url" "$filepath"
-          done
-        # 如果出错则标记为失败，并提示错误信息
-        continue-on-error: true
+          node read_website.js
         env:
           GITHUB_RUN_ID: ${{ github.run_id }}
-        # 可以使用这个命令来将报错信息发送到 pull request 上，方便开发者查看
-        # run: curl -X POST -H "Accept: application/vnd.github.v3+json" -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-        # -d '{"event_type": "error", "client_payload": {"message": "Workflow Failed! See logs for details."}}' \
-        # https://api.github.com/repos/${{ github.repository }}/dispatches
+
 
       - name: 设置 Git 配置
         run: |
