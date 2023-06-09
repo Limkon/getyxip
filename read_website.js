@@ -34,10 +34,6 @@ const puppeteer = require('puppeteer-core');
           '#my-id',               // ID 选择器
           '[name="my-name"]',     // 属性选择器
           '.my-parent .my-child', // 后代选择器
-          'ul > li',              // 子元素选择器
-          'h2 + p',               // 兄弟选择器
-          ':hover',               // 伪类选择器
-          ':nth-child(2)'         // 伪类选择器
         ];
 
         let content = '';
