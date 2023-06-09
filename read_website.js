@@ -48,7 +48,7 @@ const puppeteerDefaultArgs = {
       const filepath = path.join('data', `${filename}_${timestamp}.txt`).replace(/[:?<>|"*\r\n]/g, '_');
 
       // 检查链接是否可以访问
-      if (!await puppeteerDefaultArgs.isPageAlive(url)) {
+      if (!(await puppeteerDefaultArgs.isPageAlive(url))) {
         console.error(`Skipping URL: ${url}, unable to access.`);
         failedUrls.push(url);
         continue;
