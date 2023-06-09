@@ -19,7 +19,7 @@ jobs:
       - name: 设置 Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '16.X'
+          node-version: '16.x'
 
       - name: 安装依赖
         run: |
@@ -30,7 +30,7 @@ jobs:
         run: |
           delay=$((RANDOM % 9 + 1))
           sleep "$delay"
-          
+
       - name: 读取网站内容
         run: |
           node read_website.js
@@ -40,6 +40,16 @@ jobs:
         with:
           name: website-content
           path: data
+
+      - name: 更新 README.md
+        run: |
+          if [[ -f README.md ]]; then
+            cp README.md README.md.bak
+            head -n 4 README.md.bak > README.md
+          fi
+          echo "### Code Run on: $(date)" >> README.md
+          cat README.md.bak >> README.md
+          rm README.md.bak
 
       - name: 设置 Git 配置
         run: |
