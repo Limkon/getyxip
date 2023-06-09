@@ -29,7 +29,7 @@ const puppeteer = require('puppeteer-core');
         });
 
         const date = moment().format('YYYY-MM-DD');
-        const fileName = path.join('data', `${url}_${date}.txt`).replace(/[:?<>|"*\r\n]/g, '_');
+        const fileName = path.join('data', `${url.replace(/[:?<>|"*\r\n/]/g, '_')}_${date}.txt`);
 
         fs.writeFileSync(fileName, content);
 
