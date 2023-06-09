@@ -5,7 +5,7 @@ const puppeteer = require('puppeteer-core');
 
 (async () => {
   try {
-    const browser = await puppeteer.launch({ headless: 'new' });
+    const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox'] });
     const page = await browser.newPage();
     const urls = fs.readFileSync('urls', 'utf-8').split(/\r?\n/);
     const outputDir = path.join(__dirname, 'output');
@@ -41,4 +41,3 @@ const puppeteer = require('puppeteer-core');
     console.error(`Error occurred while launching Puppeteer: ${err.stack}`);
   }
 })();
-
