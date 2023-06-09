@@ -1,43 +1,28 @@
 name: fetch-website-content
-
 on:
   workflow_dispatch:
-  
   schedule:
-    - cron: '0 23 * * *'
+    - cron: "0 23 * * *"
 
 jobs:
   fetch-website-content:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout 代码库
         uses: actions/checkout@v3
         with:
           ref: ${{ github.head_ref }}
-
       - name: 安装 Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '16.x'
-
+          node-version: "16.x"
       - name: 安装依赖
         run: npm install puppeteer moment
-
       - name: 读取链接
         run: cat urls > urls_tmp
-
       - name: 调用 read_website.js
         run: node read_website.js
 
-      name: 爬取网页
-
-on:
-  workflow_dispatch:
-  schedule:
-    - cron: "0 0 * * *"
-
-jobs:
   fetch-webpage:
     runs-on: ubuntu-latest
     steps:
@@ -71,7 +56,6 @@ jobs:
         env:
           GITHUB_RUN_ID: ${{ github.run_id }}
 
-
       - name: 设置 Git 配置
         run: |
           git config --global user.name "${{ github.actor }}"
@@ -88,5 +72,5 @@ jobs:
         continue-on-error: true
         run: |
           git add data
-          git commit -m 'Add website content'
+          git commit -m "Add website content"
           git push origin HEAD:${{ github.head_ref }}
