@@ -28,6 +28,7 @@ jobs:
           fi
 
       - name: 合并结果文件
+        continue-on-error: true
         run: |
           node mergeResults.js
           cp -r data/. result/
