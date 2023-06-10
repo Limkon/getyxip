@@ -49,7 +49,7 @@ jobs:
           name: website-content
           path: data
 
-      - name: 更新 README.md
+            - name: 更新 README.md
         run: |
           if [[ -f README.md ]]; then
             cp README.md README.md.bak
@@ -59,9 +59,8 @@ jobs:
               rm README.md.bak
             fi
           fi
-          echo "### 备份：$(TZ='Asia/Shanghai' date '+%A %Y年%m月%d日 %T')" >> README.md
-          cat README.md >> README.md.tmp
-          mv README.md.tmp README.md
+          echo "### 备份：$(TZ='Asia/Shanghai' date '+%A %Y年%m月%d日 %T')" > README.md
+
 
       - name: 设置 Git 配置
         run: |
