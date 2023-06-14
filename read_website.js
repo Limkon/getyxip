@@ -11,8 +11,8 @@ const puppeteer = require('puppeteer-core');
     });
     const page = await browser.newPage();
 
-    // 设置页面的最大等待时间为 20 秒
-    page.setDefaultTimeout(20000);
+    // 设置页面的最大等待时间为 10 秒
+    page.setDefaultTimeout(10000);
 
     // 读取文件内容，获取所有要抓取的 URL 列表
     const urls = fs
