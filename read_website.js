@@ -11,8 +11,8 @@ const puppeteer = require('puppeteer-core');
     });
     const page = await browser.newPage();
 
-    // 将页面等待时间更改为 5000 毫秒
-    page.setDefaultTimeout(5000);
+    // 将页面等待时间更改为10秒
+    page.setDefaultTimeout(10000);
 
     // 读取文件内容，获取所有要抓取的 URL 列表
     const urls = fs
@@ -24,6 +24,9 @@ const puppeteer = require('puppeteer-core');
     for (const url of urls) {
       try {
         await page.goto(url);
+
+        // 页面加载后等待10秒
+        await page.waitForTimeout(10000);
 
         // 尝试不同的选择器
         const selectors = [
