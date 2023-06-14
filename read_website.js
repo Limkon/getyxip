@@ -64,19 +64,21 @@ const puppeteer = require('puppeteer-core');
           if (customContent) {
             content = customContent;
             console.log(`通过自定义代码成功提取了 ${url} 的内容`);
+            success = true;
           } else {
             console.error(`自定义代码也无法获取 ${url} 的内容`);
-            continue;
           }
         }
 
-        const date = moment().format('YYYY-MM-DD');
-        const urlWithoutProtocol = url.replace(/^(https?:\/\/)/, '');
-        const fileName = path.join('data', `${urlWithoutProtocol.replace(/[:?<>|"*\r\n/]/g, '_')}_${date}.txt`);
+        if (success) {
+          const date = moment().format('YYYY-MM-DD');
+          const urlWithoutProtocol = url.replace(/^(https?:\/\/)/, '');
+          const fileName = path.join('data', `${urlWithoutProtocol.replace(/[:?<>|"*\r\n/]/g, '_')}_${date}.txt`);
 
-        fs.writeFileSync(fileName, content);
+          fs.writeFileSync(fileName, content);
 
-        console.log(`网站 ${url} 内容已保存至文件：${fileName}`);
+          console.log(`网站 ${url} 内容已保存至文件：${fileName}`);
+        }
       } catch (error) {
         console.error(`处理 ${url} 失败：${error.message}`);
       }
