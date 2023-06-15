@@ -38,3 +38,6 @@ jobs:
           git add .
           git commit -m "Add merged result files"
           git push
+
+      - name: 清空数据目录
+        run: rm -rf data/*
