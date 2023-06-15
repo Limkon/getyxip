@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   
   schedule:
-    - cron: "0 0 */7 * *"
+    - cron: "0 0 */30 * *"
 
 jobs:
   merge_results:
@@ -36,8 +36,10 @@ jobs:
           git config --local user.email "actions@github.com"
           git config --local user.name "GitHub Actions"
           git add .
-          git commit -m "Add merged result files"
-          git push
+          git diff-index --quiet HEAD || git commit -m "Add merged result files" && git push || echo "No changes to commit and push."
 
       - name: 清空数据目录
-        run: rm -rf data/*
+        run: |
+          if [ ${{ success() }} = true ] || [ ${{ steps.merge_results.outputs.changes }} = 'false' ]; then
+            rm -rf data/*
+          fi
