@@ -36,7 +36,7 @@ jobs:
           git config --local user.email "actions@github.com"
           git config --local user.name "GitHub Actions"
           git add .
-          git diff-index --quiet HEAD || git commit -m "Add merged result files" && git push || echo "No changes to commit and push."
+          git diff-index --quiet HEAD || { git commit -m "Add merged result files" && git push; } || echo "No changes to commit and push."
 
       - name: 清空数据目录
         run: |
