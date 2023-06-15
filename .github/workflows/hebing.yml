@@ -41,5 +41,5 @@ jobs:
       - name: 清空数据目录
         run: |
           if [ -z "$(git status --porcelain)" ]; then
-            rm -rf data/*
+            find data/ -type f -exec rm {} +
           fi
