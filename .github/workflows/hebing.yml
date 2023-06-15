@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   
   schedule:
-    - cron: "0 0 */30 * *"
+    - cron: "0 0 */7 * *"
 
 jobs:
   merge_results:
@@ -40,6 +40,6 @@ jobs:
 
       - name: 清空数据目录
         run: |
-          if [ ${{ success() }} = true ] || [ ${{ steps.merge_results.outputs.changes }} = 'false' ]; then
+          if [ -z "$(git status --porcelain)" ]; then
             rm -rf data/*
           fi
