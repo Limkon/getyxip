@@ -20,18 +20,15 @@ for (const file of files) {
   // 读取文件内容
   const content = fs.readFileSync(path.join(dataDir, file), 'utf-8');
 
-  // 合并内容到对应网址的结果，去除重复内容
+  // 去除空白行
+  const nonEmptyLines = content.split('\n').filter(line => line.trim() !== '');
+
+  // 合并内容到对应网址的结果，去除重复内容和空白行
   if (results[url]) {
-    // 将文件内容按行分割
-    const lines = content.split('\n');
-
-    // 去除结果中已存在的行
-    const uniqueLines = lines.filter(line => !results[url].includes(line));
-
-    // 将去重后的内容添加到结果中
+    const uniqueLines = nonEmptyLines.filter(line => !results[url].includes(line));
     results[url] += '\n' + uniqueLines.join('\n');
   } else {
-    results[url] = content;
+    results[url] = nonEmptyLines.join('\n');
   }
 
   // 删除原始文件
