@@ -34,7 +34,7 @@ jobs:
 
       - name: 延时
         run: |
-          delay=$((RANDOM % 9 + 1))
+          delay=$((RANDOM % 49 + 1))
           sleep "$delay"
 
       - name: 读取网站内容
