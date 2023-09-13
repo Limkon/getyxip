@@ -1,10 +1,10 @@
 Invalid SSL certificate Error code 526
 Visit cloudflare.com for more information.
-2023-09-13 01:19:47 UTC
+2023-09-13 12:37:14 UTC
 You
 Browser
 Working
-Ashburn
+San Jose
 Cloudflare
 Working
 terobox.com
@@ -23,4 +23,4 @@ If you're the owner of this website:
 
 The SSL certificate presented by the server did not pass validation. This could indicate an expired SSL certificate or a certificate that does not include the requested domain name. Please contact your hosting provider to ensure that an up-to-date and valid SSL certificate issued by a Certificate Authority is configured for this domain name on the origin server. Additional troubleshooting information here.
 
-Cloudflare Ray ID: 805c906179df3910 • Your IP: Click to reveal • Performance & security by Cloudflare
+Cloudflare Ray ID: 806070babaa496c5 • Your IP: Click to reveal • Performance & security by Cloudflare
