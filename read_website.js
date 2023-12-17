@@ -11,8 +11,8 @@ const moment = require('moment');
     });
     const page = await browser.newPage();
 
-    // 设置页面超时时间为10秒
-    page.setDefaultTimeout(10000);
+    // 设置页面超时时间为30秒，可以根据实际情况调整
+    page.setDefaultTimeout(30000);
 
     // 读取文件内容，获取所有要抓取的 URL 列表
     const urls = fs
@@ -25,11 +25,11 @@ const moment = require('moment');
       try {
         await page.goto(url);
 
-        // 页面加载后等待10秒
-        await page.waitForTimeout(10000);
+        // 等待页面加载完成，根据实际情况调整等待时间或事件
+        await page.waitForSelector('#app');
 
         const content = await page.evaluate(() => {
-          return document.body.textContent; // 获取整个页面的文本内容
+          return document.getElementById('app').innerText; // 获取指定 ID 下的文本内容
         });
 
         const date = moment().format('YYYY-MM-DD');
